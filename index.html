@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rahim's Mart – Retail Manager</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>Rahim's Mart</b><span>Nakuru &middot; Retail Manager</span></div>
+  <nav id="tabs" aria-label="Main">
+    <button data-view="dashboard" class="on">Dashboard</button>
+    <button data-view="pos">Sell</button>
+    <button data-view="inventory">Stock</button>
+    <button data-view="alerts">Alerts <span id="alertCount" class="badge" hidden>0</span></button>
+    <button data-view="reports">Reports</button>
+  </nav>
+</header>
+
+<main>
+  <!-- DASHBOARD -->
+  <section id="v-dashboard" class="view">
+    <h1>Today at a glance</h1>
+    <div class="cards" id="dashCards"></div>
+    <h2>Needs attention</h2>
+    <div id="dashAlerts"></div>
+  </section>
+
+  <!-- POS -->
+  <section id="v-pos" class="view" hidden>
+    <h1>Sell</h1>
+    <div class="pos">
+      <div>
+        <label class="field">Search by name or scan / type barcode, then press Enter
+          <input id="posSearch" type="search" autocomplete="off" placeholder="e.g. sugar or 6001001">
+        </label>
+        <div id="posResults" class="results"></div>
+      </div>
+      <div class="cart">
+        <h2>Cart</h2>
+        <div id="cartLines"></div>
+        <div class="total"><span>Total</span><b id="cartTotal">KES 0</b></div>
+        <label class="field">Payment
+          <select id="payMethod"><option>Cash</option><option>M-Pesa</option><option>Card</option></select>
+        </label>
+        <div class="row">
+          <button id="checkoutBtn" class="primary">Complete sale</button>
+          <button id="clearCartBtn" class="ghost">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section id="v-inventory" class="view" hidden>
+    <h1>Stock</h1>
+    <div class="row bar">
+      <input id="invSearch" type="search" placeholder="Filter products">
+      <select id="invFilter">
+        <option value="all">All items</option>
+        <option value="low">Low stock</option>
+        <option value="out">Out of stock</option>
+        <option value="expiring">Expiring / expired</option>
+      </select>
+      <button id="addProductBtn" class="primary">+ New product</button>
+    </div>
+    <div class="scroll"><table id="invTable"></table></div>
+  </section>
+
+  <!-- ALERTS -->
+  <section id="v-alerts" class="view" hidden>
+    <h1>Alerts</h1>
+    <div id="alertsBody"></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section id="v-reports" class="view" hidden>
+    <h1>Reports</h1>
+    <div class="row bar">
+      <button id="exportSales" class="ghost">Export sales (CSV)</button>
+      <button id="exportStock" class="ghost">Export stock (CSV)</button>
+      <button id="resetBtn" class="danger">Reset demo data</button>
+    </div>
+    <div class="cards" id="repCards"></div>
+    <div class="two">
+      <div><h2>Sales by day</h2><div class="scroll"><table id="dayTable"></table></div></div>
+      <div><h2>Top sellers</h2><div class="scroll"><table id="topTable"></table></div></div>
+    </div>
+    <h2>Activity log</h2>
+    <div class="scroll"><table id="logTable"></table></div>
+  </section>
+</main>
+
+<!-- Product dialog -->
+<dialog id="prodDlg">
+  <form id="prodForm" method="dialog">
+    <h2 id="prodTitle">Product</h2>
+    <label class="field">Name<input name="name" required maxlength="60"></label>
+    <div class="grid2">
+      <label class="field">Barcode / SKU<input name="sku" required maxlength="30"></label>
+      <label class="field">Category<input name="category" maxlength="30" value="General"></label>
+      <label class="field">Cost price (KES)<input name="cost" type="number" min="0" step="0.01" required></label>
+      <label class="field">Selling price (KES)<input name="price" type="number" min="0" step="0.01" required></label>
+      <label class="field">Quantity in stock<input name="qty" type="number" min="0" step="1" required></label>
+      <label class="field">Reorder level<input name="reorder" type="number" min="0" step="1" required></label>
+    </div>
+    <label class="field">Expiry date (leave empty if none)<input name="expiry" type="date"></label>
+    <p id="prodErr" class="err" role="alert"></p>
+    <div class="row end">
+      <button type="button" id="prodCancel" class="ghost">Cancel</button>
+      <button type="submit" class="primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Restock dialog -->
+<dialog id="restockDlg">
+  <form id="restockForm" method="dialog">
+    <h2 id="restockTitle">Restock</h2>
+    <label class="field">Units received<input name="n" type="number" min="1" step="1" required></label>
+    <label class="field">New expiry date (optional)<input name="expiry" type="date"></label>
+    <div class="row end">
+      <button type="button" id="restockCancel" class="ghost">Cancel</button>
+      <button type="submit" class="primary">Add stock</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Receipt dialog -->
+<dialog id="rcptDlg">
+  <div id="rcptBody" class="receipt"></div>
+  <div class="row end">
+    <button id="rcptPrint" class="ghost">Print</button>
+    <button id="rcptClose" class="primary">Done</button>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
